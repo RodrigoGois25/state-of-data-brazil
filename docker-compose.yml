@@ -1,0 +1,32 @@
+services:
+  jupyter-notebook:
+    image: quay.io/jupyter/datascience-notebook
+    container_name: jupyter_notebook
+    command: start-notebook.py --IdentityProvider.token=''
+    ports:
+      - 8888:8888
+    volumes:
+      - ./ml:/home/jovyan/work
+
+  n8n:
+    image: n8nio/n8n
+    container_name: n8n
+    ports:
+      - 5678:5678
+
+  flask-app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: flask_app
+    depends_on:
+      - n8n
+    ports:
+      - 5000:5000
+    volumes:
+      - ./app:/app
+      - ./ml/models:/models
+
+networks:
+  default:
+    name: sods

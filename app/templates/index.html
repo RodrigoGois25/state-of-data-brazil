@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recomendador de Cargos</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+        h1 {
+            color: #1c1e21;
+            margin-bottom: 24px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #606770;
+            font-weight: bold;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #dddfe2;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #1877f2;
+            color: white;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #166fe5;
+        }
+        button:disabled {
+            background-color: #a0bdf5;
+            cursor: not-allowed;
+        }
+        #result-message {
+            margin-top: 24px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #1c1e21; /* Cor padrão */
+        }
+        .success {
+            color: #28a745; /* Verde para sucesso */
+        }
+        .error {
+            color: #dc3545; /* Vermelho para erro */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Recomendador de Cargos em Dados</h1>
+        <form id="recommendation-form">
+            <div class="form-group">
+                <label for="idade">Qual sua idade? (Apenas números inteiros)</label>
+                <input type="number" id="idade" name="idade" required min="16" step="1">
+            </div>
+            <div class="form-group">
+                <label for="nivel_ensino">Qual seu nível de ensino?</label>
+                <select id="nivel_ensino" name="nivel_ensino" required>
+                    <option value="Não tenho graduação formal">Não tenho graduação formal</option>
+                    <option value="Graduação/Bacharelado">Graduação/Bacharelado</option>
+                    <option value="Pós-graduação">Pós-graduação</option>
+                    <option value="Mestrado">Mestrado</option>
+                    <option value="Doutorado ou Phd">Doutorado ou Phd</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="formacao">Qual sua área de formação?</label>
+                <select id="formacao" name="formacao" required>
+                    <option value="Computação / Engenharia de Software / Sistemas de Informação/ TI">Computação e TI</option>
+                    <option value="Estatística/ Matemática / Matemática Computacional/ Ciências Atuariais">Estatística e Matemática</option>
+                    <option value="Economia/ Finanças/ Contabilidade">Economia e Finanças</option>
+                    <option value="Outras Engenharias">Outras Engenharias</option>
+                    <option value="Ciências Sociais / Humanas">Ciências Sociais / Humanas</option>
+                    <option value="Outras">Outras</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="experiencia">Qual seu tempo de experiência em dados?</label>
+                <select id="experiencia" name="experiencia" required>
+                    <option value="Não tenho experiência na área de dados">Não tenho experiência</option>
+                    <option value="Menos de 1 ano">Menos de 1 ano</option>
+                    <option value="de 1 a 2 anos">1 a 2 anos</option>
+                    <option value="de 3 a 4 anos">3 a 4 anos</option>
+                    <option value="de 4 a 6 anos">4 a 6 anos</option>
+                    <option value="de 7 a 10 anos">7 a 10 anos</option>
+                    <option value="Mais de 10 anos">Mais de 10 anos</option>
+                </select>
+            </div>
+            <button type="submit">Obter Recomendação</button>
+        </form>
+        <div id="result-message"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('recommendation-form');
+        const submitButton = form.querySelector('button');
+        const resultMessage = document.getElementById('result-message');
+        const webhookUrl = 'http://localhost:5678/webhook/10418a36-6956-452f-a0e6-f1c86f644133';
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const idadeInput = document.getElementById('idade');
+            const idade = idadeInput.value;
+
+            if (!idade || idade < 16 || !Number.isInteger(Number(idade))) {
+                resultMessage.className = 'error';
+                resultMessage.textContent = 'Por favor, insira uma idade válida (número inteiro, maior que 15).';
+                return;
+            }
+
+            submitButton.disabled = true;
+            resultMessage.className = '';
+            resultMessage.textContent = 'Processando sua recomendação...';
+
+            const experiencia = document.getElementById('experiencia').value;
+            const nivel_ensino = document.getElementById('nivel_ensino').value;
+            const formacao = document.getElementById('formacao').value;
+
+            const dataPayload = {
+                idade: parseInt(idade),
+                nivel_ensino: nivel_ensino,
+                formacao: formacao,
+                tempo_experiencia_dados: experiencia,
+                genero: "Nao informado",
+                etnia: "Nao informado",
+                pcd: "Não",
+                vive_no_brasil: true,
+                estado_moradia: "Nao informado",
+                linguagens_preferidas: "Nao informado",
+                bancos_de_dados: "Nao informado",
+                cloud_preferida: "Nao informado"
+            };
+
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/plain',
+                },
+                body: JSON.stringify(dataPayload),
+            })
+            .then(response => response.json())
+            .then(data => {
+                resultMessage.className = 'success';
+                resultMessage.textContent = data.recomendacao.mensagem;
+                submitButton.disabled = false;
+            })
+            .catch((error) => {
+                console.error('Erro:', error);
+                resultMessage.className = 'error';
+                resultMessage.textContent = 'Ocorreu um erro. Verifique se seus serviços locais (API Flask e n8n Docker) estão ativos.';
+                submitButton.disabled = false;
+            });
+        });
+    </script>
+</body>
+</html>

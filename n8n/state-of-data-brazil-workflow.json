@@ -1,0 +1,155 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://flask-app:5000/predict",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        720,
+        48
+      ],
+      "id": "e2573c49-7561-4a40-81c2-bd8ec014e18f",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "10418a36-6956-452f-a0e6-f1c86f644133",
+        "responseMode": "responseNode",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Methods",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        64,
+        48
+      ],
+      "id": "de990ee3-2698-47fd-8abc-d7d07bde2de9",
+      "name": "Webhook",
+      "webhookId": "10418a36-6956-452f-a0e6-f1c86f644133"
+    },
+    {
+      "parameters": {
+        "jsCode": "// A única mudança é aqui na primeira linha: adicionamos .body\nconst item = items[0].json;\n\n// O resto do código permanece o mesmo\nconst experienceMap = {\n    'Não tenho experiência na área de dados': 0, 'Menos de 1 ano': 1, 'de 1 a 2 anos': 2,\n    'de 3 a 4 anos': 3, 'de 4 a 6 anos': 4, 'de 7 a 10 anos': 5, 'Mais de 10 anos': 6\n};\n\nconst apiPayload = {\n    \"idade\": item.idade, \"genero\": item.genero, \"etnia\": item.etnia, \"pcd\": item.pcd,\n    \"vive_no_brasil\": item.vive_no_brasil, \"estado_moradia\": item.estado_moradia,\n    \"nivel_ensino\": item.nivel_ensino, \"formacao\": item.formacao,\n    \"linguagens_preferidas\": item.linguagens_preferidas,\n    \"bancos_de_dados\": item.bancos_de_dados, \"cloud_preferida\": item.cloud_preferida,\n    \"experiencia_ordinal\": experienceMap[item.tempo_experiencia_dados]\n};\n\nreturn apiPayload;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        48
+      ],
+      "id": "5a8569f9-045c-403b-85eb-74e46ad9cb9c",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{\n  {\n    \"recomendacao\": {\n      \"mensagem\": \"Baseado no seu perfil, o cargo ideal recomendado é: \" + $('HTTP Request').item.json.cargo_predito\n    }\n  }\n}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        928,
+        48
+      ],
+      "id": "4da27f1a-5fe3-46eb-a4b2-f7c698611d86",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "// O Webhook agora recebe os dados como texto plano dentro da chave 'body'\nconst stringData = items[0].json.body;\n\n// Convertemos a string de volta para um objeto JSON\nconst jsonData = JSON.parse(stringData);\n\n// Retornamos o objeto JSON para o próximo nó poder usá-lo\nreturn jsonData;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        272,
+        48
+      ],
+      "id": "6033071c-c835-40b4-99a2-e571d8306d65",
+      "name": "Code1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "174dc98e-603e-45dc-bb9e-08d90fd48234",
+  "meta": {
+    "instanceId": "f7b759897afe1a8187f690168eb4329b7dd7e3ca991f6b55e01b202c5604fb4f"
+  },
+  "id": "URGUHHzTRlQJxJ9c",
+  "tags": []
+}
