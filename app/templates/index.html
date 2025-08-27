@@ -86,6 +86,53 @@
 					<input type="number" id="idade" name="idade" required min="16" step="1" />
 				</div>
 				<div class="form-group">
+					<label for="genero">Qual seu gênero?</label>
+					<select id="genero" name="genero" required>
+						<option value="masculino">Masculino</option>
+						<option value="feminino">Feminino</option>
+						<option value="prefiro nao informar">Prefiro Não Informar</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="etnia">Qual sua etnia?</label>
+					<select id="etnia" name="etnia" required>
+						<option value="amarela">Amarela</option>
+						<option value="branca">Branca</option>
+						<option value="indigena">Indígena</option>
+						<option value="parda">Parda</option>
+						<option value="preta">Preta</option>
+						<option value="outra">Outra</option>
+						<option value="prefiro nao informar">Prefiro Não Informar</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="estado_moradia">Qual seu estado de moradia?</label>
+					<select id="estado_moradia" name="estado_moradia" required>
+						<option value="alagoas (al)">Alagoas (AL)</option>
+						<option value="amazonas (am)">Amazonas (AM)</option>
+						<option value="bahia (ba)">Bahia (BA)</option>
+						<option value="ceara (ce)">Ceará (CE)</option>
+						<option value="distrito federal (df)">Distrito Federal (DF)</option>
+						<option value="espirito santo (es)">Espírito Santo (ES)</option>
+						<option value="goias (go)">Goiás (GO)</option>
+						<option value="maranhao (ma)">Maranhão (MA)</option>
+						<option value="mato grosso (mt)">Mato Grosso (MT)</option>
+						<option value="mato grosso do sul (ms)">Mato Grosso do Sul (MS)</option>
+						<option value="minas gerais (mg)">Minas Gerais (MG)</option>
+						<option value="para (pa)">Pará (PA)</option>
+						<option value="paraiba (pb)">Paraíba (PB)</option>
+						<option value="parana (pr)">Paraná (PR)</option>
+						<option value="pernambuco (pe)">Pernambuco (PE)</option>
+						<option value="piaui (pi)">Piauí (PI)</option>
+						<option value="rio de janeiro (rj)">Rio de Janeiro (RJ)</option>
+						<option value="rio grande do norte (rn)">Rio Grande do Norte (RN)</option>
+						<option value="rio grande do sul (rs)">Rio Grande do Sul (RS)</option>
+						<option value="santa catarina (sc)">Santa Catarina (SC)</option>
+						<option value="sao paulo (sp)">São Paulo (SP)</option>
+						<option value="sergipe (se)">Sergipe (SE)</option>
+					</select>
+				</div>
+				<div class="form-group">
 					<label for="nivel_ensino">Qual seu nível de ensino?</label>
 					<select id="nivel_ensino" name="nivel_ensino" required>
 						<option value="nao tenho graduacao formal">Não Possuo Graduação</option>
@@ -133,6 +180,29 @@
 						<option value="mais de 10 anos">Mais de 10 Anos</option>
 					</select>
 				</div>
+				<div class="form-group">
+					<label for="linguagens_preferidas">Qual sua linguagem preferida?</label>
+					<select id="linguagens_preferidas" name="linguagens_preferidas" required>
+						<option value="python">Python</option>
+						<option value="r">R</option>
+						<option value="sql">SQL</option>
+						<option value="scala">Scala</option>
+						<option value="c/c++/c#">C/C++/C#</option>
+						<option value="julia">Julia</option>
+						<option value="outro">Outro</option>
+						<option value="nenhuma">Nenhuma</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="cloud_preferida">Qual sua cloud preferida?</label>
+					<select id="cloud_preferida" name="cloud_preferida" required>
+						<option value="amazon web services (aws)">Amazon Web Services (AWS)</option>
+						<option value="google cloud (gcp)">Google Cloud (GCP)</option>
+						<option value="azure (microsoft)">Azure (Microsoft)</option>
+						<option value="outra cloud">Outra Cloud</option>
+						<option value="nao sei opinar">Não Sei Opinar</option>
+					</select>
+				</div>
 				<button type="submit">Obter Recomendação</button>
 			</form>
 			<div id="result-message"></div>
@@ -163,17 +233,22 @@
 				const experiencia = document.getElementById('experiencia').value
 				const nivel_ensino = document.getElementById('nivel_ensino').value
 				const formacao = document.getElementById('formacao').value
+				const genero = document.getElementById('genero').value
+				const etnia = document.getElementById('etnia').value
+				const estado_moradia = document.getElementById('estado_moradia').value
+				const linguagens_preferidas = document.getElementById('linguagens_preferidas').value
+				const cloud_preferida = document.getElementById('cloud_preferida').value
 
 				const dataPayload = {
 					idade: parseInt(idade),
-					genero: 'masculino',
-					etnia: 'branca',
-					estado_moradia: 'para (pa)',
+					genero: genero,
+					etnia: etnia,
+					estado_moradia: estado_moradia,
 					nivel_ensino: nivel_ensino,
 					formacao: formacao,
 					tempo_experiencia_dados: experiencia,
-					linguagens_preferidas: 'python',
-					cloud_preferida: 'amazon web services (aws)',
+					linguagens_preferidas: linguagens_preferidas,
+					cloud_preferida: cloud_preferida,
 				}
 
 				fetch(webhookUrl, {

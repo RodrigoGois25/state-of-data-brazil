@@ -6,13 +6,9 @@ app = Flask(__name__)
 
 # Carregando Modelos e Encoders
 try:
-    model = load("../models/neural_network_model.joblib")
+    model = load("../models/random_forest_model.joblib")
     labels = load("../models/label_encoder.joblib")
-    print(
-        """Modelo e Encoder Carregados com Sucesso!\n
-        São Esperadas as Colunas:""",
-        model.feature_names_in_,
-    )
+    print("Modelo e Encoder Carregados com Sucesso!")
 except Exception as error:
     print(error)
     raise
