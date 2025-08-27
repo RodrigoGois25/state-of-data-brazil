@@ -121,3 +121,9 @@ A interface do usuário aparecerá. Preencha o formulário para obter sua recome
 ├── .gitignore              # Arquivos a serem ignorados pelo Git
 ├── docker-compose.yml      # Orquestrador da aplicação
 └── requirements.txt        # Dependências para a fase de experimentação
+
+```
+
+## 6. Conclusão
+
+O projeto cumpriu com sucesso o objetivo de criar um agente inteligente para recomendação de cargos, entregando uma aplicação web funcional que consome um modelo de Machine Learning treinado e validado. Os desafios encontrados, especialmente na configuração do ambiente de desenvolvimento, reforçam a importância de ferramentas como o Docker para garantir a reprodutibilidade e a facilidade de implantação em projetos de software.
