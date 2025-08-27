@@ -1,5 +1,5 @@
 {
-  "name": "My workflow",
+  "name": "State of Data Brazil Workflow",
   "nodes": [
     {
       "parameters": {
@@ -13,10 +13,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        720,
-        48
+        656,
+        0
       ],
-      "id": "e2573c49-7561-4a40-81c2-bd8ec014e18f",
+      "id": "edab22a0-fea5-4053-bb47-eccf35c35aa4",
       "name": "HTTP Request"
     },
     {
@@ -46,52 +46,52 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        64,
-        48
+        0,
+        0
       ],
-      "id": "de990ee3-2698-47fd-8abc-d7d07bde2de9",
+      "id": "33c06d99-79a5-45f4-8bdb-be7e48c4cb08",
       "name": "Webhook",
       "webhookId": "10418a36-6956-452f-a0e6-f1c86f644133"
     },
     {
       "parameters": {
-        "jsCode": "// A única mudança é aqui na primeira linha: adicionamos .body\nconst item = items[0].json;\n\n// O resto do código permanece o mesmo\nconst experienceMap = {\n    'Não tenho experiência na área de dados': 0, 'Menos de 1 ano': 1, 'de 1 a 2 anos': 2,\n    'de 3 a 4 anos': 3, 'de 4 a 6 anos': 4, 'de 7 a 10 anos': 5, 'Mais de 10 anos': 6\n};\n\nconst apiPayload = {\n    \"idade\": item.idade, \"genero\": item.genero, \"etnia\": item.etnia, \"pcd\": item.pcd,\n    \"vive_no_brasil\": item.vive_no_brasil, \"estado_moradia\": item.estado_moradia,\n    \"nivel_ensino\": item.nivel_ensino, \"formacao\": item.formacao,\n    \"linguagens_preferidas\": item.linguagens_preferidas,\n    \"bancos_de_dados\": item.bancos_de_dados, \"cloud_preferida\": item.cloud_preferida,\n    \"experiencia_ordinal\": experienceMap[item.tempo_experiencia_dados]\n};\n\nreturn apiPayload;"
+        "jsCode": "// A única mudança é aqui na primeira linha: adicionamos .body\nconst item = items[0].json\n\n// Mapeamento dos Níveis de Ensino\nconst nivel_ensino_map = {\n\t\"estudante de graduacao\": 1,\n\t\"graduacao/bacharelado\": 2,\n\t\"pos-graduacao\": 3,\n\t\"mestrado\": 4,\n\t\"doutorado ou phd\": 5,\n\t\"nao tenho graduacao formal\": 0,\n\t\"prefiro nao informar\": 0,\n}\n\n// Mapeamento dos Tempos de Experiência\nconst tempo_experiencia_dados_map = {\n\t\"menos de 1 ano\": 0.5,\n\t\"de 1 a 2 anos\": 1.5,\n\t\"de 3 a 4 anos\": 3.5,\n\t\"de 4 a 6 anos\": 5.0,\n\t\"de 7 a 10 anos\": 8.0,\n\t\"mais de 10 anos\": 12.0,\n\t\"nao tenho experiencia na area de dados\": 0.0,\n}\n\nconst apiPayload = {\n\tidade: item.idade,\n\tgenero: item.genero,\n\tetnia: item.etnia,\n\testado_moradia: item.estado_moradia,\n\tnivel_ensino: nivel_ensino_map[item.nivel_ensino],\n\tformacao: item.formacao,\n\ttempo_experiencia_dados: tempo_experiencia_dados_map[item.tempo_experiencia_dados],\n\tlinguagens_preferidas: item.linguagens_preferidas,\n\tcloud_preferida: item.cloud_preferida,\n}\n\nreturn apiPayload"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        480,
-        48
+        416,
+        0
       ],
-      "id": "5a8569f9-045c-403b-85eb-74e46ad9cb9c",
+      "id": "aa93bc7c-d345-4a9f-b268-87931e62c27e",
       "name": "Code"
     },
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={{\n  {\n    \"recomendacao\": {\n      \"mensagem\": \"Baseado no seu perfil, o cargo ideal recomendado é: \" + $('HTTP Request').item.json.cargo_predito\n    }\n  }\n}}",
+        "responseBody": "={{\n  {\n    \"recomendacao\": {\n      \"mensagem\": \"Baseado no seu perfil, o cargo ideal recomendado é: \" + $('HTTP Request').item.json.predicted_job\n    }\n  }\n}}",
         "options": {}
       },
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.4,
       "position": [
-        928,
-        48
+        864,
+        0
       ],
-      "id": "4da27f1a-5fe3-46eb-a4b2-f7c698611d86",
+      "id": "8ffe760d-d183-4a8f-a85f-44ce607c6c35",
       "name": "Respond to Webhook"
     },
     {
       "parameters": {
-        "jsCode": "// O Webhook agora recebe os dados como texto plano dentro da chave 'body'\nconst stringData = items[0].json.body;\n\n// Convertemos a string de volta para um objeto JSON\nconst jsonData = JSON.parse(stringData);\n\n// Retornamos o objeto JSON para o próximo nó poder usá-lo\nreturn jsonData;"
+        "jsCode": "// O Webhook agora recebe os dados como texto plano dentro da chave 'body'\nconst stringData = items[0].json.body\n\n// Convertemos a string de volta para um objeto JSON\nconst jsonData = JSON.parse(stringData)\n\n// Retornamos o objeto JSON para o próximo nó poder usá-lo\nreturn jsonData"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        272,
-        48
+        208,
+        0
       ],
-      "id": "6033071c-c835-40b4-99a2-e571d8306d65",
+      "id": "0b5fc81c-c6a9-48fc-ae6e-69978d9f2e86",
       "name": "Code1"
     }
   ],
@@ -146,10 +146,10 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "174dc98e-603e-45dc-bb9e-08d90fd48234",
+  "versionId": "6fab6bb5-04ec-4653-a291-ed7750bc2a42",
   "meta": {
-    "instanceId": "f7b759897afe1a8187f690168eb4329b7dd7e3ca991f6b55e01b202c5604fb4f"
+    "instanceId": "223c8db01706098891faf48eebbd9657bb614430440fa4d873ce1bdb977178d6"
   },
-  "id": "URGUHHzTRlQJxJ9c",
+  "id": "dEGAdzDZUNgySUzc",
   "tags": []
 }
